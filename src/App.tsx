@@ -10,8 +10,9 @@ const productsMap: any = {
 }
 
 function App() {
-  const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
+  const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
     onOpen: () => console.log('opened'),
+    onClose: () => console.log('closed'),
     shouldReconnect: (closeEvent) => true,
     onMessage: (event: WebSocketEventMap['message']) =>  console.log(JSON.parse(event.data))
   });
@@ -49,11 +50,16 @@ function App() {
     connect(product)
   }, [sendJsonMessage, product]);
 
+  const kill = () => getWebSocket()?.close()
+
   return (
     <div className="App">
-      Playing with WebSockets (look at the console)
+      Playing with WebSockets (look at the console logs)
       <aside>
         <button onClick={toggle}>TOGGLE</button>
+      </aside>
+      <aside>
+        <button onClick={kill}>KILL</button>
       </aside>
     </div>
   );
